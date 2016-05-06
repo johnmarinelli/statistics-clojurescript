@@ -9,3 +9,6 @@ and refresh webpage.
 ## REPL in from emacs
 `M-x cider-connect`
 `(start-repl)`
+
+## Test
+`boot test-cljs`
