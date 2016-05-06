@@ -1,0 +1,2 @@
+{:require [stats.core]
+ :compiler-options {:asset-path "js/main.out"}}
