@@ -25,6 +25,6 @@
   (let [random-mean-generator (by-id "generate-random-mean")]
     (set! (.-onclick random-mean-generator) set-random-mean-html!)))
 
-(println "this is nice")
 
-(set! (.-onload js/window) init)
+
+

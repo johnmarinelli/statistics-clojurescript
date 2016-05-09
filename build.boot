@@ -35,7 +35,7 @@
    (target :dir #{"target"})))
 
 (deftask testing []
-  (merge-env! :source-paths #{"test"})
+  (merge-env! :source-paths #{"test/cljs"})
   identity)
 
 (deftask test-all []
@@ -44,4 +44,4 @@
         (test)
         (exit!)))
 
-(set-env! :source-paths #(conj % "test"))
+(set-env! :source-paths #(conj % "test/cljs"))
