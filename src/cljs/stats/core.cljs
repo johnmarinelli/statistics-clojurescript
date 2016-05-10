@@ -12,9 +12,38 @@
         width (- (count within) 1)]
     (nth within (mod (rand-int 100) width))))
 
+(defn median [coll]
+  (let [half-length (/ (count coll) 2)
+        idx (Math/floor half-length)]
+    (nth coll idx)))
+
+(defn first-quartile [coll]
+  (let [half-length (Math/floor (/ (count coll) 2))]
+    (median (take half-length coll))))
+
+(defn third-quartile [coll]
+  (let [half-length (Math/floor (/ (count coll) 2))]
+    (median (take-last half-length coll))))
+
+(defn mean [coll]
+  (let [len (count coll)
+        sum (reduce + coll)]
+    (/ sum len)))
+
+(defn standard-deviation
+  ([coll] (standard-deviation coll false))
+  ([coll sample]
+   (let [mean (mean coll)
+         len (count coll)
+         n (if sample (- len 1) len)
+         sq-diff (map #(Math/pow (- % mean) 2) coll)
+         sum-sq-diff (reduce + sq-diff)
+         s-squared (/ sum-sq-diff n)]
+     (Math/sqrt s-squared))))
+
 (defn random-mean [begin end n]
   (let [rand-series (map #(random rand-min rand-max) (range 0 n))]
-    (/ (reduce + rand-series) (count rand-series))))
+    (mean rand-series)))
 
 (defn set-random-mean-html! 
   []

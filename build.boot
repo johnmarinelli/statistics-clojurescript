@@ -34,14 +34,9 @@
    (cljs)
    (target :dir #{"target"})))
 
-(deftask testing []
-  (merge-env! :source-paths #{"test/cljs"})
-  identity)
-
-(deftask test-all []
-  (comp (testing)
-        (test-cljs)
-        (test)
-        (exit!)))
+(deftask test-and-dev []
+  (comp
+   (watch)
+   (test-cljs)))
 
 (set-env! :source-paths #(conj % "test/cljs"))
