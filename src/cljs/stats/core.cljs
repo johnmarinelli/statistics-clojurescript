@@ -1,5 +1,6 @@
 (ns stats.core
-  (:require [domina.core :refer [by-id value set-value!]]))
+  (:require [domina.core :refer [by-id value set-value!]]
+            [clojure.string :as str]))
 
 (enable-console-print!)
 
@@ -58,6 +59,14 @@
   []
   (let [rm (random-mean rand-min rand-max sample-size)]
     (set-value! (by-id "random-mean") rm)))
+
+(defn set-population-standard-deviation-html!
+  []
+  "Reads a csv list of values and writes the S.D of them to the screen"
+  (let [psd-input (value (by-id "pop-sd-sample-input"))
+        sample-coll (map #(js/parseInt %) (str/split psd-input #","))
+        psd-output (by-id "pop-sd-sample-result")]
+    (population-std-deviation sample-coll true)))
 
 (comment(defn) init []
   (let [random-mean-generator (by-id "generate-random-mean")]
