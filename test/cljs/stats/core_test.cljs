@@ -53,3 +53,10 @@
   (let [data (range 1 11)
         tq (app/third-quartile data)]
     (is (= tq 8))))
+
+(deftest test-normal-distribution-density []
+  (let [mean 11
+        sd 1
+        x 12
+        d (app/normal-distribution-density mean sd x)]
+    (is (= d 0.24197072451914337))))

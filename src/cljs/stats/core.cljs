@@ -41,6 +41,15 @@
          s-squared (/ sum-sq-diff n)]
      (Math/sqrt s-squared))))
 
+(defn normal-distribution-density [mean sd x]
+  (let [denominator (* sd (Math/sqrt (* 2 (.-PI js/Math))))
+        exp (* -1 (/ (Math/pow (- x mean) 2) (* 2 (Math/pow sd 2))))
+        numerator (Math/pow (.-E js/Math) exp)]
+    (/ numerator denominator)))
+
+(defn standard-normal-distribution-density [x]
+  (normal-distribution-density 0 1 x))
+
 (defn random-mean [begin end n]
   (let [rand-series (map #(random rand-min rand-max) (range 0 n))]
     (mean rand-series)))
@@ -50,7 +59,7 @@
   (let [rm (random-mean rand-min rand-max sample-size)]
     (set-value! (by-id "random-mean") rm)))
 
-(defn init []
+(comment(defn) init []
   (let [random-mean-generator (by-id "generate-random-mean")]
     (set! (.-onclick random-mean-generator) set-random-mean-html!)))
 
