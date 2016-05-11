@@ -60,3 +60,16 @@
         x 12
         d (app/normal-distribution-density mean sd x)]
     (is (= d 0.24197072451914337))))
+
+(deftest variance []
+  (let [data (range 1 11)
+        v (app/variance data)]
+    (is (= v 8.25))))
+
+(deftest confidence-interval-proportion []
+  (let [phat 0.576
+        n 1000
+        p 0.5
+        ci (app/confidence-interval-proportion phat n p)]
+    (is (= ci (list 0.5450096789303498 0.6069903210696501)))))
+
