@@ -31,6 +31,10 @@
         sum (reduce + coll)]
     (/ sum len)))
 
+(defn variance 
+  ([coll] (Math/pow (standard-deviation coll) 2))
+  ([coll sample] (Math/pow (standard-deviation coll sample) 2)))
+
 (defn standard-deviation
   ([coll] (standard-deviation coll false))
   ([coll sample]
@@ -46,7 +50,22 @@
   (let [rand-series (map #(random rand-min rand-max) (range 0 n))]
     (mean rand-series)))
 
->>>>>>> 82d80d9fe1c6832687e7238c84561d63f20ebb51
+(defn confidence-interval-proportion
+  "If p is null, use p = phat"
+  ([phat n] (confidence-interval phat n alpha phat))
+  ([phat n p]
+   (let [z 1.96
+         margin-of-error (/ p (Math/sqrt n))
+         z-moe (* z margin-of-error)]
+     (list (- phat z-moe) (+ phat z-moe)))))
+
+(defn confidence-interval-mean
+  ([sample-mean std-deviation n]
+   (let [z 1.96
+         margin-of-error (/ std-deviation (Math/sqrt n))
+         z-moe (* z margin-of-error)]
+     (list (- sample-mean z-moe) (+ sample-mean z-moe)))))
+
 (defn set-random-mean-html! 
   []
   (let [rm (random-mean rand-min rand-max sample-size)]
