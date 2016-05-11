@@ -13,21 +13,40 @@
         width (- (count within) 1)]
     (nth within (mod (rand-int 100) width))))
 
-(defn get-mean [coll]
-  (/ (reduce + coll) (count coll)))
+(defn median [coll]
+  (let [half-length (/ (count coll) 2)
+        idx (Math/floor half-length)]
+    (nth coll idx)))
+
+(defn first-quartile [coll]
+  (let [half-length (Math/floor (/ (count coll) 2))]
+    (median (take half-length coll))))
+
+(defn third-quartile [coll]
+  (let [half-length (Math/floor (/ (count coll) 2))]
+    (median (take-last half-length coll))))
+
+(defn mean [coll]
+  (let [len (count coll)
+        sum (reduce + coll)]
+    (/ sum len)))
+
+(defn standard-deviation
+  ([coll] (standard-deviation coll false))
+  ([coll sample]
+   (let [mean (mean coll)
+         len (count coll)
+         n (if sample (- len 1) len)
+         sq-diff (map #(Math/pow (- % mean) 2) coll)
+         sum-sq-diff (reduce + sq-diff)
+         s-squared (/ sum-sq-diff n)]
+     (Math/sqrt s-squared))))
 
 (defn random-mean [begin end n]
   (let [rand-series (map #(random rand-min rand-max) (range 0 n))]
-    (get-mean rand-series)))
+    (mean rand-series)))
 
-(defn population-std-deviation 
-  ([coll sample]
-   (let [n (if sample (- (count coll) 1) (count coll))
-         mean (get-mean coll)
-         sum (reduce + (map #(Math/pow (- % mean) 2) coll))]
-     (Math/pow (/ sum n) 0.5)))
-  ([coll] (population-std-deviation coll false)))
-  
+>>>>>>> 82d80d9fe1c6832687e7238c84561d63f20ebb51
 (defn set-random-mean-html! 
   []
   (let [rm (random-mean rand-min rand-max sample-size)]
@@ -45,6 +64,6 @@
   (let [random-mean-generator (by-id "generate-random-mean")]
     (set! (.-onclick random-mean-generator) set-random-mean-html!)))
 
-(println "this is nice")
 
-(set! (.-onload js/window) init)
+
+
