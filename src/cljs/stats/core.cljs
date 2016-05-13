@@ -108,9 +108,11 @@
 
 (defn display-rectangles [f svg-width svg-height a b n]
   (let [svg (create-svg svg-width svg-height)
-        rects (get-rectangles-under-curve f a b n)
-        svg-rects (-> svg (.selectAll "rect") (.data rects))]
-    (println rects)))
+        dataset (get-rectangles-under-curve f a b n)
+        rects (-> svg (.selectAll "rect") (.data (apply array dataset)))]
+    (println dataset)
+    (println (count dataset))
+    (-> rects .enter (.append "rect") (.style "fill" "steelblue") (.attr "x" #()) (.attr "y" 10) (.attr "width" #(:width %)) (.attr "height" #(:height %)))))
 
 (defn set-random-mean-html! 
   []
