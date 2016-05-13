@@ -90,22 +90,27 @@
         width (- b a)]
     (* width height)))
 
-(defn integrate [f a b n]
-  (let [rects (get-rectangles-under-curve f a b n)]
-    (reduce + (map #(* (:width %) (:height %)) rects))))
-
+(defn integrate 
+  ([rects] (reduce + (map #(* (:width %) (:height %)) rects)))
+  ([f a b n] (integrate (get-rectangles-under-curve f a b n))))
+  
 (def svg-width 500)
 (def svg-height 500)
-
 
 (defn create-svg [width height]
   (-> js/d3 (.select "body") (.append "svg") (.attr "width" width) (.attr "height" height)))
 
 (defn test-svg []
   (let [svg (create-svg svg-width svg-height)
-        circle (.selectAll svg "circle")
-        circles (-> circle (.data (range 5 30 5)) .enter (.append "circle"))]
-    (-> circles (.attr "cx" #(* (.random js/Math) 720)) (.attr "cy" 50) (.attr "r" #(identity %)))))
+        dataset (array 1 2 3 4 5)
+        circles (-> svg (.selectAll "circle") (.data dataset))]
+    (-> circles .enter (.append "circle") (.attr "cx" #(* 10 %)) (.attr "cy" 50) (.attr "r" 50))))
+
+(defn display-rectangles [f svg-width svg-height a b n]
+  (let [svg (create-svg svg-width svg-height)
+        rects (get-rectangles-under-curve f a b n)
+        svg-rects (-> svg (.selectAll "rect") (.data rects))]
+    (println rects)))
 
 (defn set-random-mean-html! 
   []
