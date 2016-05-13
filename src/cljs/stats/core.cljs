@@ -94,6 +94,19 @@
   (let [rects (get-rectangles-under-curve f a b n)]
     (reduce + (map #(* (:width %) (:height %)) rects))))
 
+(def svg-width 500)
+(def svg-height 500)
+
+
+(defn create-svg [width height]
+  (-> js/d3 (.select "body") (.append "svg") (.attr "width" width) (.attr "height" height)))
+
+(defn test-svg []
+  (let [svg (create-svg svg-width svg-height)
+        circle (.selectAll svg "circle")
+        circles (-> circle (.data (range 5 30 5)) .enter (.append "circle"))]
+    (-> circles (.attr "cx" #(* (.random js/Math) 720)) (.attr "cy" 50) (.attr "r" #(identity %)))))
+
 (defn set-random-mean-html! 
   []
   (let [rm (random-mean rand-min rand-max sample-size)]
