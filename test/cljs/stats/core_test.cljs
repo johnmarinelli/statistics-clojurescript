@@ -73,3 +73,17 @@
         ci (app/confidence-interval-proportion phat n p)]
     (is (= ci (list 0.5450096789303498 0.6069903210696501)))))
 
+(deftest get-area []
+  (let [a 1
+        b 3
+        f #(identity %)
+        a (app/get-area f a b)]
+    (is (= a 4))))
+
+(deftest integrate []
+  (let [a 1.5
+        b 5.75
+        n 100
+        f #(identity %)
+        definite-integral (app/integrate f a b n)]
+    (is (= definite-integral 1))))

@@ -31,10 +31,6 @@
         sum (reduce + coll)]
     (/ sum len)))
 
-(defn variance 
-  ([coll] (Math/pow (standard-deviation coll) 2))
-  ([coll sample] (Math/pow (standard-deviation coll sample) 2)))
-
 (defn standard-deviation
   ([coll] (standard-deviation coll false))
   ([coll sample]
@@ -45,6 +41,10 @@
          sum-sq-diff (reduce + sq-diff)
          s-squared (/ sum-sq-diff n)]
      (Math/sqrt s-squared))))
+
+(defn variance 
+  ([coll] (Math/pow (standard-deviation coll) 2))
+  ([coll sample] (Math/pow (standard-deviation coll sample) 2)))
 
 (defn normal-distribution-density [mean sd x]
   (let [denominator (* sd (Math/sqrt (* 2 (.-PI js/Math))))
@@ -61,7 +61,7 @@
 
 (defn confidence-interval-proportion
   "If p is null, use p = phat"
-  ([phat n] (confidence-interval phat n alpha phat))
+  ([phat n] (confidence-interval-proportion phat n phat))
   ([phat n p]
    (let [z 1.96
          margin-of-error (/ p (Math/sqrt n))
@@ -75,6 +75,25 @@
          z-moe (* z margin-of-error)]
      (list (- sample-mean z-moe) (+ sample-mean z-moe)))))
 
+(defrecord Rectangle [x y width height])
+
+(defn get-rectangles-under-curve [f a b n]
+  (let [width (/ (- b a) n)]
+    (loop [rects '() itr a]
+      (if (>= itr b)
+        (reverse rects)
+        (recur (conj rects (Rectangle. itr 0 width (f (/ (+ a b) 2)))) (+ itr width))))))
+
+(defn get-area [f a b]
+  (let [midpoint (/ (+ a b) 2)
+        height (f midpoint)
+        width (- b a)]
+    (* width height)))
+
+(defn integrate [f a b n]
+  (let [rects (get-rectangles-under-curve f a b n)]
+    (reduce + (map #(* (:width %) (:height %)) rects))))
+
 (defn set-random-mean-html! 
   []
   (let [rm (random-mean rand-min rand-max sample-size)]
@@ -86,7 +105,7 @@
   (let [psd-input (value (by-id "pop-sd-sample-input"))
         sample-coll (map #(js/parseInt %) (str/split psd-input #","))
         psd-output (by-id "pop-sd-sample-result")]
-    (population-std-deviation sample-coll true)))
+    (standard-deviation sample-coll true)))
 
 (comment(defn) init []
   (let [random-mean-generator (by-id "generate-random-mean")]
