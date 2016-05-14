@@ -6,6 +6,10 @@
 (defn- between [lhs rhs n]
   (and (<= lhs n) (>= rhs n)))
 
+(defn- round-to [n precision]
+  (let [factor (Math/pow 10 precision)]
+    (/ (Math/round (* n factor)) factor)))
+
 (deftest test-random-in-range []
   (let [min 1
         max 10
@@ -85,5 +89,6 @@
         b 5.75
         n 100
         f #(identity %)
-        definite-integral (app/integrate f a b n)]
-    (is (= definite-integral 1))))
+        definite-integral (app/integrate f a b n)
+        rounded (round-to definite-integral 2)]
+    (is (= rounded 15.41))))

@@ -82,7 +82,7 @@
     (loop [rects '() itr a]
       (if (>= itr b)
         (reverse rects)
-        (recur (conj rects (Rectangle. itr 0 width (f (/ (+ a b) 2)))) (+ itr width))))))
+        (recur (conj rects (Rectangle. itr 0 width (f (/ (+ itr (+ itr width)) 2)))) (+ itr width))))))
 
 (defn get-area [f a b]
   (let [midpoint (/ (+ a b) 2)
@@ -102,17 +102,15 @@
 
 (defn test-svg []
   (let [svg (create-svg svg-width svg-height)
-        dataset (array 1 2 3 4 5)
-        circles (-> svg (.selectAll "circle") (.data dataset))]
+        dataset '(1 2 3 4 5)
+        circles (-> svg (.selectAll "circle") (.data (apply array dataset)))]
     (-> circles .enter (.append "circle") (.attr "cx" #(* 10 %)) (.attr "cy" 50) (.attr "r" 50))))
 
 (defn display-rectangles [f svg-width svg-height a b n]
   (let [svg (create-svg svg-width svg-height)
         dataset (get-rectangles-under-curve f a b n)
         rects (-> svg (.selectAll "rect") (.data (apply array dataset)))]
-    (println dataset)
-    (println (count dataset))
-    (-> rects .enter (.append "rect") (.style "fill" "steelblue") (.attr "x" #()) (.attr "y" 10) (.attr "width" #(:width %)) (.attr "height" #(:height %)))))
+    (-> rects .enter (.append "rect") (.style "fill" "steelblue") (.attr "x" #(* 10 (:x %))) (.attr "y" 10) (.attr "width" #(* 10 (:width %))) (.attr "height" #(* 10 (:height %))))))
 
 (defn set-random-mean-html! 
   []
@@ -130,7 +128,3 @@
 (comment(defn) init []
   (let [random-mean-generator (by-id "generate-random-mean")]
     (set! (.-onclick random-mean-generator) set-random-mean-html!)))
-
-
-
-
