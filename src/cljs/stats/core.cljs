@@ -93,12 +93,28 @@
 (defn integrate 
   ([rects] (reduce + (map #(* (:width %) (:height %)) rects)))
   ([f a b n] (integrate (get-rectangles-under-curve f a b n))))
+
+(defn standard-normal-distribution-cumulative [x]
+  (integrate #(standard-normal-distribution-cumulative %) -5.0 x 100))
   
 (def svg-width 500)
 (def svg-height 500)
 
 (defn create-svg [width height]
   (-> js/d3 (.select "body") (.append "svg") (.attr "width" width) (.attr "height" height)))
+
+(defn margin-of-error [z phat n]
+  (let [numerator (* phat (- 1 phat))
+        denominator n
+        sqrt (Math/sqrt (/ numerator denominator))]
+    (* z sqrt)))
+
+(defn hypothesis-test-proportion [p phat n]
+  (let [diff (- phat p)
+        moe (margin-of-error 1.96 phat n)
+        lte (/ diff moe)
+        std-normal-prob (standard-normal-distribution-cumulative lte)]
+    ))
 
 (defn test-svg []
   (let [svg (create-svg svg-width svg-height)
