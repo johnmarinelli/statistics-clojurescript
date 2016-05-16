@@ -84,6 +84,18 @@
         a (app/get-area f a b)]
     (is (= a 4))))
 
+(deftest get-rectangles-under-curve []
+  (let [f #(identity %)
+        a 0
+        b 5
+        n 5
+        rects (app/get-rectangles-under-curve f a b n)
+        expected-rects (loop [rs '() itr a]
+                         (if (= itr b)
+                           (reverse rs)
+                           (recur (conj rs (app/Rectangle. itr 0 (/ b n) (+ 0.5 itr))) (inc itr))))]
+    (is (= rects expected-rects))))
+
 (deftest integrate []
   (let [a 1.5
         b 5.75
@@ -92,3 +104,22 @@
         definite-integral (app/integrate f a b n)
         rounded (round-to definite-integral 2)]
     (is (= rounded 15.41))))
+
+(deftest standard-normal-distribution-cumulative []
+  (let [x -1.75
+        prob (app/standard-normal-distribution-cumulative x)]
+    (is (= prob 1))))
+
+(deftest margin-of-error []
+  (let [z 1.96 
+        phat 0.5
+        n 100
+        moe (app/margin-of-error z phat n)]
+    (is (= moe 1))))
+
+(deftest hypothesis-test-proportion-double-tailed
+  (let [phat 0.52
+        p 0.5
+        n 1096
+        hyp (app/hypothesis-test-proportion-double-tailed p phat n)]
+    (is (= hyp 1))))

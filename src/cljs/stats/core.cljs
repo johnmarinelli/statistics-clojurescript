@@ -109,12 +109,14 @@
         sqrt (Math/sqrt (/ numerator denominator))]
     (* z sqrt)))
 
-(defn hypothesis-test-proportion [p phat n]
-  (let [diff (- phat p)
+(defn hypothesis-test-proportion-double-tailed [p phat n]
+  "double tailed = probability that zscore is less than -phat or greater than +phat
+   p is sample proportion, phat is hypothesized value"
+  (let [diff (- p phat)
         moe (margin-of-error 1.96 phat n)
-        lte (/ diff moe)
-        std-normal-prob (standard-normal-distribution-cumulative lte)]
-    ))
+        z-score (/ diff moe)
+        std-normal-prob (standard-normal-distribution-cumulative z-score)]
+    (* std-normal-prob 2)))
 
 (defn test-svg []
   (let [svg (create-svg svg-width svg-height)
