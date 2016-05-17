@@ -118,6 +118,43 @@
         std-normal-prob (standard-normal-distribution-cumulative z-score)]
     (* std-normal-prob 2)))
 
+(defn factorial [n]
+  (if (= n 0)
+    1
+    (* n (factorial (dec n)))))
+
+(defn gamma-function [n]
+  (let [n-minus-one (dec n)]
+    (factorial n-minus-one))) 
+
+(def E (-.E js/Math))
+
+(defn square [n] (* n n))
+
+(defn twice [n] (* 2 n))
+(defn halve [n] (/ n 2))
+
+(defn gamma-function-real [r]
+  (let [c1 (fn [n] Math/pow E (- (square n)))
+        c2 (fn [n] Math/pow n (dec (twice r)))
+        fn #(* #(c1 %) #(c2 %))
+        a 0
+        b 100
+        n 100
+        c3 (integrate fn a b n)]
+    (twice c3)))
+
+(println (gamma-function-real 2.5))
+
+(defn t-distribution [degrees-of-freedom t]
+  (let [numerator (/ (inc degrees-of-freedom) 2)
+        sqrt (Math/sqrt (* degrees-of-freedom (.-PI js/Math)))
+        denominator (* sqrt (gamma-function (/ degrees-of-freedom 2)))
+        c1 (/ numerator denominator)
+        ]))
+
+(defn hypothesis-test-mean-double-tailed [])
+
 (defn test-svg []
   (let [svg (create-svg svg-width svg-height)
         dataset '(1 2 3 4 5)

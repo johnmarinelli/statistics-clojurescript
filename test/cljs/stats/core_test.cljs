@@ -123,3 +123,9 @@
         n 1096
         hyp (app/hypothesis-test-proportion-double-tailed p phat n)]
     (is (= hyp 1))))
+
+(deftest factorial
+  (let [n 10
+        fact (app/factorial n)]
+    (is (= fact 1))))
+
