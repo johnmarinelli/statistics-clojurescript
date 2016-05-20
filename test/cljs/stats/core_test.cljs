@@ -129,3 +129,7 @@
         fact (app/factorial n)]
     (is (= fact 1))))
 
+(deftest gamma-function-real
+  (let [n 0.1
+        g (app/gamma-function-real n)]
+    (is = n 1)))

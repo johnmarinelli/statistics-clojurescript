@@ -119,7 +119,7 @@
     (* std-normal-prob 2)))
 
 (defn factorial [n]
-  (if (= n 0)
+  (if (<= n 0)
     1
     (* n (factorial (dec n)))))
 
@@ -127,24 +127,23 @@
   (let [n-minus-one (dec n)]
     (factorial n-minus-one))) 
 
-(def E (-.E js/Math))
+(def E (.-E js/Math))
 
 (defn square [n] (* n n))
 
-(defn twice [n] (* 2 n))
-(defn halve [n] (/ n 2))
-
-(defn gamma-function-real [r]
-  (let [c1 (fn [n] Math/pow E (- (square n)))
-        c2 (fn [n] Math/pow n (dec (twice r)))
-        fn #(* #(c1 %) #(c2 %))
-        a 0
-        b 100
-        n 100
-        c3 (integrate fn a b n)]
-    (twice c3)))
-
-(println (gamma-function-real 2.5))
+(defn gamma-function-real [number]
+  (if (< number 0.5)
+    (/ Math/PI (* (Math/sin (* Math/PI number))
+                  (gamma-function-real (- 1 number))))
+    (let [n (dec number)
+          c [0.99999999999980993 676.5203681218851 -1259.1392167224028
+             771.32342877765313 -176.61502916214059 12.507343278686905
+             -0.13857109526572012 9.9843695780195716e-6 1.5056327351493116e-7]]
+      (* (Math/sqrt (* 2 Math/PI))
+         (Math/pow (+ n 7 0.5) (+ n 0.5))
+         (Math/exp (- (+ n 7 0.5)))
+         (+ (first c)
+            (apply + (map-indexed #(/ %2 (+ n %1 1)) (next c))))))))
 
 (defn t-distribution [degrees-of-freedom t]
   (let [numerator (/ (inc degrees-of-freedom) 2)
