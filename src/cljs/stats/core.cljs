@@ -95,7 +95,7 @@
   ([f a b n] (integrate (get-rectangles-under-curve f a b n))))
 
 (defn standard-normal-distribution-cumulative [x]
-  (integrate #(standard-normal-distribution-cumulative %) -5.0 x 100))
+  (integrate #(standard-normal-distribution-density %) -5.0 x 100))
   
 (def svg-width 500)
 (def svg-height 500)
@@ -103,47 +103,51 @@
 (defn create-svg [width height]
   (-> js/d3 (.select "body") (.append "svg") (.attr "width" width) (.attr "height" height)))
 
-(defn margin-of-error [z phat n]
+(defn standard-error [phat n]
   (let [numerator (* phat (- 1 phat))
-        denominator n
-        sqrt (Math/sqrt (/ numerator denominator))]
-    (* z sqrt)))
+        denominator n]
+    (Math/sqrt (/ numerator denominator))))
 
+(comment
+"Significance level (or p value) is the difference between 
+hypothesized mean and obesrved mean, divided by the standard error
+of hypothesized mean.")
 (defn hypothesis-test-proportion-double-tailed [p phat n]
   "double tailed = probability that zscore is less than -phat or greater than +phat
-   p is sample proportion, phat is hypothesized value"
+   p is sample proportion, phat is hypothesized value
+   if p <= alpha (where alpha = 1 - significance level), reject H0 (return true)."
   (let [diff (- p phat)
-        moe (margin-of-error 1.96 phat n)
-        z-score (/ diff moe)
-        std-normal-prob (standard-normal-distribution-cumulative z-score)]
-    (* std-normal-prob 2)))
+        sd (Math/sqrt (/ (* p (- 1 p)) n))
+        z-score (/ diff sd)
+        std-normal-prob (standard-normal-distribution-cumulative z-score)
+        pval (* std-normal-prob 2)]
+    (<= pval 0.05)))
 
 (defn factorial [n]
   (if (<= n 0)
     1
     (* n (factorial (dec n)))))
 
-(defn gamma-function [n]
-  (let [n-minus-one (dec n)]
-    (factorial n-minus-one))) 
+(defn gamma-function [number]
+  (if (.isInteger js/Number number)
+    (let [n-minus-one (dec number)]
+      (factorial n-minus-one))
+    (if (< number 0.5)
+      (/ Math/PI (* (Math/sin (* Math/PI number))
+                 (gamma-function (- 1 number))))
+      (let [n (dec number)
+            c [0.99999999999980993 676.5203681218851 -1259.1392167224028
+               771.32342877765313 -176.61502916214059 12.507343278686905
+               -0.13857109526572012 9.9843695780195716e-6 1.5056327351493116e-7]]
+        (* (Math/sqrt (* 2 Math/PI))
+          (Math/pow (+ n 7 0.5) (+ n 0.5))
+          (Math/exp (- (+ n 7 0.5)))
+          (+ (first c)
+             (apply + (map-indexed #(/ %2 (+ n %1 1)) (next c)))))))))
 
 (def E (.-E js/Math))
 
 (defn square [n] (* n n))
-
-(defn gamma-function-real [number]
-  (if (< number 0.5)
-    (/ Math/PI (* (Math/sin (* Math/PI number))
-                  (gamma-function-real (- 1 number))))
-    (let [n (dec number)
-          c [0.99999999999980993 676.5203681218851 -1259.1392167224028
-             771.32342877765313 -176.61502916214059 12.507343278686905
-             -0.13857109526572012 9.9843695780195716e-6 1.5056327351493116e-7]]
-      (* (Math/sqrt (* 2 Math/PI))
-         (Math/pow (+ n 7 0.5) (+ n 0.5))
-         (Math/exp (- (+ n 7 0.5)))
-         (+ (first c)
-            (apply + (map-indexed #(/ %2 (+ n %1 1)) (next c))))))))
 
 (defn t-distribution [degrees-of-freedom t]
   (let [numerator (/ (inc degrees-of-freedom) 2)

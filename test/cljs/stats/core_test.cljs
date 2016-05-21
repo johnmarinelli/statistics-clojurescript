@@ -108,28 +108,27 @@
 (deftest standard-normal-distribution-cumulative []
   (let [x -1.75
         prob (app/standard-normal-distribution-cumulative x)]
-    (is (= prob 1))))
+    (is (= (round-to prob 4) 0.0401))))
 
-(deftest margin-of-error []
-  (let [z 1.96 
-        phat 0.5
+(deftest standard-error []
+  (let [phat 0.5
         n 100
-        moe (app/margin-of-error z phat n)]
-    (is (= moe 1))))
+        se (app/standard-error phat n)]
+    (is (= se 0.05))))
 
 (deftest hypothesis-test-proportion-double-tailed
   (let [phat 0.52
         p 0.5
         n 1096
         hyp (app/hypothesis-test-proportion-double-tailed p phat n)]
-    (is (= hyp 1))))
+    (is (= hyp false))))
 
-(deftest factorial
-  (let [n 10
-        fact (app/factorial n)]
-    (is (= fact 1))))
+(comment(deftest factorial
+   (let [n 10
+         fact (app/factorial n)]
+     (is (= fact 1))))
 
-(deftest gamma-function-real
-  (let [n 0.1
-        g (app/gamma-function-real n)]
-    (is = n 1)))
+(comment(deftest gamma-function-real
+   (let [n 0.1
+         g (app/gamma-function-real n)]
+     (is (= n 1))))))
