@@ -123,12 +123,40 @@
         hyp (app/hypothesis-test-proportion-double-tailed p phat n)]
     (is (= hyp false))))
 
+(deftest is-integer?-true
+  (let [n 1
+        ii (app/is-integer? n)]
+    (is (= ii true))))
+
+(deftest is-integer?-false
+  (let [n 1.5
+        ii (app/is-integer? n)]
+    (is (= ii false))))
+
+
 (comment(deftest factorial
    (let [n 10
          fact (app/factorial n)]
-     (is (= fact 1))))
+     (is (= fact 1)))))
 
-(comment(deftest gamma-function-real
-   (let [n 0.1
-         g (app/gamma-function-real n)]
-     (is (= n 1))))))
+(deftest is-integer?
+  (let [n "str"
+        ii (app/is-integer? n)]
+    (is (= ii false))))
+
+(deftest gamma-function
+  (let [n 0.1
+        g (app/gamma-function n)]
+    (is (= (round-to g 2) 9.51))))
+
+(deftest t-distribution-probability-density
+  (let [dof 3
+        n 0.25
+        t (app/t-distribution-probability-density dof n)]
+    (is (= (round-to t 2) 0.35 ))))
+
+(deftest t-distribution-cumulative
+  (let [dof 3
+        t-score 0.1
+        c (app/t-distribution-cumulative dof t-score)]
+    (is (= (round-to c 2) 0.53))))

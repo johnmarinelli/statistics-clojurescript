@@ -128,8 +128,11 @@ of hypothesized mean.")
     1
     (* n (factorial (dec n)))))
 
+(defn is-integer? [n] 
+  (= (bit-xor n 0) n))
+
 (defn gamma-function [number]
-  (if (.isInteger js/Number number)
+  (if (is-integer? number)
     (let [n-minus-one (dec number)]
       (factorial n-minus-one))
     (if (< number 0.5)
@@ -149,14 +152,30 @@ of hypothesized mean.")
 
 (defn square [n] (* n n))
 
-(defn t-distribution [degrees-of-freedom t]
-  (let [numerator (/ (inc degrees-of-freedom) 2)
-        sqrt (Math/sqrt (* degrees-of-freedom (.-PI js/Math)))
-        denominator (* sqrt (gamma-function (/ degrees-of-freedom 2)))
-        c1 (/ numerator denominator)
-        ]))
+(defn t-distribution-probability-density [degrees-of-freedom t]
+  (let [numeratorc1 (gamma-function (/ (inc degrees-of-freedom) 2))
+        sqrt (Math/sqrt (* degrees-of-freedom Math/PI))
+        denominatorc1 (* sqrt (gamma-function (/ degrees-of-freedom 2)))
+        c1 (/ numeratorc1 denominatorc1)
+        numeratorc2 (Math/pow t 2)
+        denominatorc2 degrees-of-freedom
+        expc2 (- (/ (inc degrees-of-freedom) 2))
+        c2 (Math/pow (inc (/ numeratorc2 denominatorc2)) expc2)]
+    (* c1 c2)))
 
-(defn hypothesis-test-mean-double-tailed [])
+(defn t-distribution-cumulative [dof t-score]
+  (integrate #(t-distribution-probability-density dof %) -7.0 t-score 1000))
+
+(comment
+"not entirely sure this is right.  see cdf here: http://stats.stackexchange.com/questions/57847/formula-to-calculate-a-t-distribution")
+(defn hypothesis-test-mean-double-tailed [observed-mean hyp-mean std-dev n]
+  (let [diff (- observed-mean hyp-mean)
+        sampling-dist-of-mean-sq (Math/sqrt (/ (Math/pow std-dev 2) n))
+        dof (dec n)
+        t-score (/ diff sampling-dist-of-mean-sq)
+        norm-t-score (if (> t-score 0.5) (- 1 t-score) t-score)
+        pval (* 2 (t-distribution-cumulative dof norm-t-score))])
+  (<= pval 0.05))
 
 (defn test-svg []
   (let [svg (create-svg svg-width svg-height)
