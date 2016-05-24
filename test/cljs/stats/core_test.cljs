@@ -160,3 +160,13 @@
         t-score 0.1
         c (app/t-distribution-cumulative dof t-score)]
     (is (= (round-to c 2) 0.53))))
+
+(comment
+"http://www.r-tutor.com/elementary-statistics/hypothesis-testing/two-tailed-test-population-mean-unknown-variance")
+(deftest hypothesis-test-double-tailed
+  (let [h0 15.4
+        h1 14.6
+        sd 2.5
+        n 35
+        r (app/hypothesis-test-mean-double-tailed h1 h0 sd n)]
+    (is (= r false))))

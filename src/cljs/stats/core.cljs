@@ -123,6 +123,8 @@ of hypothesized mean.")
         pval (* std-normal-prob 2)]
     (<= pval 0.05)))
 
+(comment
+"Todo: make this tail call recursive.  because i'm an asshole like that")
 (defn factorial [n]
   (if (<= n 0)
     1
@@ -166,16 +168,20 @@ of hypothesized mean.")
 (defn t-distribution-cumulative [dof t-score]
   (integrate #(t-distribution-probability-density dof %) -7.0 t-score 1000))
 
-(comment
-"not entirely sure this is right.  see cdf here: http://stats.stackexchange.com/questions/57847/formula-to-calculate-a-t-distribution")
+(comment "not 100% sure this is right. pval is correct as far as cdf goes, but don't know why we don't use alpha")
 (defn hypothesis-test-mean-double-tailed [observed-mean hyp-mean std-dev n]
-  (let [diff (- observed-mean hyp-mean)
-        sampling-dist-of-mean-sq (Math/sqrt (/ (Math/pow std-dev 2) n))
+  (let [t-score (/ (- observed-mean hyp-mean) (* std-dev (Math/sqrt n)))
         dof (dec n)
-        t-score (/ diff sampling-dist-of-mean-sq)
-        norm-t-score (if (> t-score 0.5) (- 1 t-score) t-score)
-        pval (* 2 (t-distribution-cumulative dof norm-t-score))])
-  (<= pval 0.05))
+        pval (* 2 (t-distribution-cumulative dof t-score))]
+    (<= pval 0.05)))
+
+(comment 
+"to have high probability of rejecting h0, need high power.
+power also gives a measure of how test performs over repeated sampling.
+The power of a test is the probability of making a correct decision by rejecting H0 when H0 is false.
+The higher the power, the more sensitive it is")
+(defn power)
+
 
 (defn test-svg []
   (let [svg (create-svg svg-width svg-height)
