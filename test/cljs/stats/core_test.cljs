@@ -170,3 +170,10 @@
         n 35
         r (app/hypothesis-test-mean-double-tailed h1 h0 sd n)]
     (is (= r false))))
+
+(deftest line-of-best-fit
+  (let [xs [4 5 8 3 5 11 14]
+        ys [5 6 7 4 11 13 11]
+        n 7
+        lobf (app/line-of-best-fit xs ys n)]
+    (is (= (lobf 1)))))

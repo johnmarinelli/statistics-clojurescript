@@ -180,7 +180,20 @@ of hypothesized mean.")
 power also gives a measure of how test performs over repeated sampling.
 The power of a test is the probability of making a correct decision by rejecting H0 when H0 is false.
 The higher the power, the more sensitive it is")
-(defn power)
+(defn power [] ())
+
+(defn line-of-best-fit 
+  [xs ys n]
+  (let [sum (partial reduce +)
+        cross-product (fn [v1 v2]
+                        (reduce + (map * v1 v2)))
+        calculate-b1 (fn [xs ys n]
+                       (/ (- (* n (cross-product xs ys)) (* (sum xs) (sum ys))) (- (* n (sum (map #(* % %)))) (Math/pow (sum xs) 2))))
+        slope (calculate-b1 xs ys n)
+        mean-y (mean ys)
+        mean-x (mean xs)
+        y-intercept (- mean-y (* slope (mean-x)))]
+    (fn [x] (+ (* slope x) y-intercept))))
 
 
 (defn test-svg []
