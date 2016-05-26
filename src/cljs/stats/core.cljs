@@ -182,19 +182,70 @@ The power of a test is the probability of making a correct decision by rejecting
 The higher the power, the more sensitive it is")
 (defn power [] ())
 
+(def sum (partial reduce +))
+(defn dot-product [xs ys] (sum (map * xs ys)))
+(defn calculate-b1 [xs ys n]
+  (let [sumx (sum xs)
+        sumy (sum ys)
+        xy (dot-product xs ys)
+        xx (sum (map #(* % %) xs))
+        a (* n xy)
+        b (* sumx sumy)
+        c (* n xx)
+        d (Math/pow sumx 2)
+        e (- a b)
+        d (- c d)
+        f (/ e d)]
+    (print f)))
+
+(def sum (partial reduce +))
+(comment "TODO: variable length args")
+(defn dot-product [xs ys]
+  (sum (map * xs ys)))
+
+(defn calculate-b1 [xs ys n]
+  (let [sumx (sum xs)
+        sumy (sum ys)
+        xy (dot-product xs ys)
+        xx (sum (map #(* % %) xs))
+        a (* n xy)
+        b (* sumx sumy)
+        c (* n xx)
+        d (Math/pow sumx 2)
+        e (- a b)
+        d (- c d)]
+    (/ e d)))
+
+(defn calculate-b0 [xs ys n b1]
+  (let [a (/ 1 n)
+        b (sum ys)
+        c (* b1 (sum xs))
+        d (- b c)]
+    (* a d)))
+
 (defn line-of-best-fit 
   [xs ys n]
   (let [sum (partial reduce +)
-        cross-product (fn [v1 v2]
+        dot-product (fn [v1 v2]
                         (reduce + (map * v1 v2)))
-        calculate-b1 (fn [xs ys n]
-                       (/ (- (* n (cross-product xs ys)) (* (sum xs) (sum ys))) (- (* n (sum (map #(* % %)))) (Math/pow (sum xs) 2))))
-        slope (calculate-b1 xs ys n)
-        mean-y (mean ys)
-        mean-x (mean xs)
-        y-intercept (- mean-y (* slope (mean-x)))]
-    (fn [x] (+ (* slope x) y-intercept))))
+        b1 (calculate-b1 xs ys n)
+        b0 (calculate-b0 xs ys n b1)]
+    (fn [x] (+ b0 (* b1 x)))))
 
+(comment "pearson's correlation. measures how much y varies w/ x")
+(defn correlation [xs ys]
+  (let [sumx (sum xs)
+        sumy (sum ys)
+        meanx (mean xs)
+        meany (mean ys)
+        xdiffs (map #(- % meanx) xs)
+        ydiffs (map #(- % meany) ys)
+        a (dot-product xdiffs ydiffs)
+        b (sum (map #(Math/pow (- % meanx) 2) xs))
+        c (sum (map #(Math/pow (- % meany) 2) ys))
+        d (* b c)
+        e (Math/sqrt d)]
+    (/ a e)))
 
 (defn test-svg []
   (let [svg (create-svg svg-width svg-height)

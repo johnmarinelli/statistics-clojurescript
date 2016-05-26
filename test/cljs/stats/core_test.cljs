@@ -172,8 +172,14 @@
     (is (= r false))))
 
 (deftest line-of-best-fit
-  (let [xs [4 5 8 3 5 11 14]
-        ys [5 6 7 4 11 13 11]
-        n 7
+  (let [xs [43 21 25 42 57 59]
+        ys [99 65 79 75 87 81]
+        n 6
         lobf (app/line-of-best-fit xs ys n)]
-    (is (= (lobf 1)))))
+    (is (= (round-to (lobf 1) 2) 65.53))))
+
+(deftest correlation
+  (let [xs [43 21 25 42 57 59]
+        ys [99 65 79 75 87 81]
+        c (app/correlation xs ys)]
+    (is (= (round-to c 2) 0.53))))
