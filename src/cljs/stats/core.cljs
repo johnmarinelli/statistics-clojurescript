@@ -247,6 +247,21 @@ The higher the power, the more sensitive it is")
         e (Math/sqrt d)]
     (/ a e)))
 
+(defn residuals [xs ys n]
+  (let [b1 (calculate-b1 xs ys n)
+        b0 (calculate-b0 xs ys n b1)
+        lobf (line-of-best-fit xs ys n)]
+    (map #(let [x (* b1 %1)] (- %2 b0 x)) xs ys)))
+
+(comment "Variance of the residuals.  r^2 is coefficient of determination - 
+what fraction of var(y) has been explained by this linear relationship?
+r^2 = 0 -> no linear relationship
+r^2 = 1 -> 100% linear")
+(defn residuals-variance [xs ys]
+  (let [vary (variance ys)
+        r (correlation xs ys)]
+    (* vary (- 1 (* r r)))))
+
 (defn test-svg []
   (let [svg (create-svg svg-width svg-height)
         dataset '(1 2 3 4 5)

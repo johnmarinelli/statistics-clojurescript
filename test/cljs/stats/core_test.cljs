@@ -183,3 +183,15 @@
         ys [99 65 79 75 87 81]
         c (app/correlation xs ys)]
     (is (= (round-to c 2) 0.53))))
+
+(deftest residuals
+  (let [xs [43 21 25 42 57 59]
+        ys [99 65 79 75 87 81]
+        r (app/residuals xs ys (count xs))]
+    (is (= 0 (round-to (reduce + r) 1)))))
+
+(deftest residual-variance
+  (let [xs [43 21 25 42 57 59]
+        ys [99 65 79 75 87 81]
+        rv (app/residuals-variance xs ys n)]
+    (is (= 78.64 (round-to rv 2)))))
