@@ -91,3 +91,9 @@
   (let [n 0.1
         g (common/gamma-function n)]
     (is (= (round-to g 2) 9.51))))
+
+(deftest dot-product
+  (let [xs (range 1 10)
+        ys (range 11 20)
+        dp (common/dot-product xs ys)]
+    (is (= dp 735))))

@@ -57,3 +57,6 @@
           (Math/exp (- (+ n 7 0.5)))
           (+ (first c)
              (apply + (map-indexed #(/ %2 (+ n %1 1)) (next c)))))))))
+
+(defn dot-product [xs ys] (sum (map * xs ys)))
+(def mean average)

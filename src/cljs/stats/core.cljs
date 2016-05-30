@@ -9,38 +9,38 @@
 (def rand-max 32)
 (def sample-size 100)
 
-(defn median [coll]
-  (let [half-length (/ (count coll) 2)
-        idx (Math/floor half-length)]
-    (nth coll idx)))
+(comment(defn median [coll]
+   (let [half-length (/ (count coll) 2)
+         idx (Math/floor half-length)]
+     (nth coll idx))))
 
-(defn first-quartile [coll]
-  (let [half-length (Math/floor (/ (count coll) 2))]
-    (median (take half-length coll))))
+(comment(defn first-quartile [coll]
+   (let [half-length (Math/floor (/ (count coll) 2))]
+     (median (take half-length coll)))))
 
-(defn third-quartile [coll]
-  (let [half-length (Math/floor (/ (count coll) 2))]
-    (median (take-last half-length coll))))
+(comment(defn third-quartile [coll]
+   (let [half-length (Math/floor (/ (count coll) 2))]
+     (median (take-last half-length coll)))))
 
 (defn mean [coll]
   (let [len (count coll)
         sum (reduce + coll)]
     (/ sum len)))
 
-(defn standard-deviation
-  ([coll] (standard-deviation coll false))
-  ([coll sample]
-   (let [mean (mean coll)
-         len (count coll)
-         n (if sample (- len 1) len)
-         sq-diff (map #(Math/pow (- % mean) 2) coll)
-         sum-sq-diff (reduce + sq-diff)
-         s-squared (/ sum-sq-diff n)]
-     (Math/sqrt s-squared))))
+(comment(defn standard-deviation
+   ([coll] (standard-deviation coll false))
+   ([coll sample]
+    (let [mean (mean coll)
+          len (count coll)
+          n (if sample (- len 1) len)
+          sq-diff (map #(Math/pow (- % mean) 2) coll)
+          sum-sq-diff (reduce + sq-diff)
+          s-squared (/ sum-sq-diff n)]
+      (Math/sqrt s-squared)))))
 
-(defn variance 
-  ([coll] (Math/pow (standard-deviation coll) 2))
-  ([coll sample] (Math/pow (standard-deviation coll sample) 2)))
+(comment(defn variance 
+   ([coll] (Math/pow (standard-deviation coll) 2))
+   ([coll sample] (Math/pow (standard-deviation coll sample) 2))))
 
 (comment(defn normal-distribution-density [mean sd x]
    (let [denominator (* sd (Math/sqrt (* 2 (.-PI js/Math))))
@@ -159,23 +159,9 @@ The power of a test is the probability of making a correct decision by rejecting
 The higher the power, the more sensitive it is")
 (defn power [] ())
 
-(def sum (partial reduce +))
-(defn dot-product [xs ys] (sum (map * xs ys)))
-(defn calculate-b1 [xs ys n]
-  (let [sumx (sum xs)
-        sumy (sum ys)
-        xy (dot-product xs ys)
-        xx (sum (map #(* % %) xs))
-        a (* n xy)
-        b (* sumx sumy)
-        c (* n xx)
-        d (Math/pow sumx 2)
-        e (- a b)
-        d (- c d)
-        f (/ e d)]
-    (print f)))
+(comment(def sum (partial reduce +)))
+(comment (defn dot-product [xs ys] (sum (map * xs ys))))
 
-(def sum (partial reduce +))
 (comment "TODO: variable length args")
 (defn dot-product [xs ys]
   (sum (map * xs ys)))
