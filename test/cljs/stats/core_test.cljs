@@ -2,7 +2,7 @@
   (:require-macros [cljs.test :refer [deftest testing is async]])
   (:require [cljs.test]
             [stats.core :as app]))
-
+ 
 (defn- between [lhs rhs n]
   (and (<= lhs n) (>= rhs n)))
 

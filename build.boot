@@ -34,9 +34,14 @@
    (cljs)
    (target :dir #{"target"})))
 
-(deftask test-and-dev []
+(deftask test-and-watch []
   (comp
    (watch)
    (test-cljs)))
+
+(deftask test-common-and-watch []
+  (comp 
+   (watch)
+   (test-cljs :namespaces [#".\.common.*"])))
 
 (set-env! :source-paths #(conj % "test/cljs"))
