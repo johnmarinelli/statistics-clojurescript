@@ -66,3 +66,28 @@
         rounded (round-to definite-integral 2)]
     (is (= rounded 15.41))))
 
+(deftest is-integer?-true
+  (let [n 1
+        ii (common/is-integer? n)]
+    (is (= ii true))))
+
+(deftest is-integer?-false
+  (let [n 1.5
+        ii (common/is-integer? n)]
+    (is (= ii false))))
+
+
+(comment(deftest factorial
+   (let [n 10
+         fact (common/factorial n)]
+     (is (= fact 1)))))
+
+(deftest is-integer?
+  (let [n "str"
+        ii (common/is-integer? n)]
+    (is (= ii false))))
+
+(deftest gamma-function
+  (let [n 0.1
+        g (common/gamma-function n)]
+    (is (= (round-to g 2) 9.51))))

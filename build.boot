@@ -44,4 +44,9 @@
    (watch)
    (test-cljs :namespaces [#".\.common.*"])))
 
+(deftask test-distributions-and-watch []
+  (comp
+   (watch)
+   (test-cljs :namespaces [#".\.distributions.*"])))
+
 (set-env! :source-paths #(conj % "test/cljs"))

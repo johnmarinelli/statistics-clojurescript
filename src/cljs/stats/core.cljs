@@ -42,14 +42,14 @@
   ([coll] (Math/pow (standard-deviation coll) 2))
   ([coll sample] (Math/pow (standard-deviation coll sample) 2)))
 
-(defn normal-distribution-density [mean sd x]
-  (let [denominator (* sd (Math/sqrt (* 2 (.-PI js/Math))))
-        exp (* -1 (/ (Math/pow (- x mean) 2) (* 2 (Math/pow sd 2))))
-        numerator (Math/pow (.-E js/Math) exp)]
-    (/ numerator denominator)))
+(comment(defn normal-distribution-density [mean sd x]
+   (let [denominator (* sd (Math/sqrt (* 2 (.-PI js/Math))))
+         exp (* -1 (/ (Math/pow (- x mean) 2) (* 2 (Math/pow sd 2))))
+         numerator (Math/pow (.-E js/Math) exp)]
+     (/ numerator denominator))))
 
-(defn standard-normal-distribution-density [x]
-  (normal-distribution-density 0 1 x))
+(comment(defn standard-normal-distribution-density [x]
+   (normal-distribution-density 0 1 x)))
 
 (defn random-mean [begin end n]
   (let [rand-series (map #(random rand-min rand-max) (range 0 n))]
@@ -71,8 +71,8 @@
          z-moe (* z margin-of-error)]
      (list (- sample-mean z-moe) (+ sample-mean z-moe)))))
 
-(defn standard-normal-distribution-cumulative [x]
-  (integrate #(standard-normal-distribution-density %) -5.0 x 100))
+(comment(defn standard-normal-distribution-cumulative [x]
+   (integrate #(standard-normal-distribution-density %) -5.0 x 100)))
   
 (def svg-width 500)
 (def svg-height 500)
@@ -102,48 +102,48 @@ of hypothesized mean.")
 
 (comment
 "Todo: make this tail call recursive.  because i'm an asshole like that")
-(defn factorial [n]
-  (if (<= n 0)
-    1
-    (* n (factorial (dec n)))))
+(comment(defn factorial [n]
+   (if (<= n 0)
+     1
+     (* n (factorial (dec n))))))
 
-(defn is-integer? [n] 
-  (= (bit-xor n 0) n))
+(comment(defn is-integer? [n] 
+   (= (bit-xor n 0) n)))
 
-(defn gamma-function [number]
-  (if (is-integer? number)
-    (let [n-minus-one (dec number)]
-      (factorial n-minus-one))
-    (if (< number 0.5)
-      (/ Math/PI (* (Math/sin (* Math/PI number))
-                 (gamma-function (- 1 number))))
-      (let [n (dec number)
-            c [0.99999999999980993 676.5203681218851 -1259.1392167224028
-               771.32342877765313 -176.61502916214059 12.507343278686905
-               -0.13857109526572012 9.9843695780195716e-6 1.5056327351493116e-7]]
-        (* (Math/sqrt (* 2 Math/PI))
-          (Math/pow (+ n 7 0.5) (+ n 0.5))
-          (Math/exp (- (+ n 7 0.5)))
-          (+ (first c)
-             (apply + (map-indexed #(/ %2 (+ n %1 1)) (next c)))))))))
+(comment(defn gamma-function [number]
+   (if (is-integer? number)
+     (let [n-minus-one (dec number)]
+       (factorial n-minus-one))
+     (if (< number 0.5)
+       (/ Math/PI (* (Math/sin (* Math/PI number))
+                     (gamma-function (- 1 number))))
+       (let [n (dec number)
+             c [0.99999999999980993 676.5203681218851 -1259.1392167224028
+                771.32342877765313 -176.61502916214059 12.507343278686905
+                -0.13857109526572012 9.9843695780195716e-6 1.5056327351493116e-7]]
+         (* (Math/sqrt (* 2 Math/PI))
+            (Math/pow (+ n 7 0.5) (+ n 0.5))
+            (Math/exp (- (+ n 7 0.5)))
+            (+ (first c)
+               (apply + (map-indexed #(/ %2 (+ n %1 1)) (next c))))))))))
 
 (def E (.-E js/Math))
 
 (defn square [n] (* n n))
 
-(defn t-distribution-probability-density [degrees-of-freedom t]
-  (let [numeratorc1 (gamma-function (/ (inc degrees-of-freedom) 2))
-        sqrt (Math/sqrt (* degrees-of-freedom Math/PI))
-        denominatorc1 (* sqrt (gamma-function (/ degrees-of-freedom 2)))
-        c1 (/ numeratorc1 denominatorc1)
-        numeratorc2 (Math/pow t 2)
-        denominatorc2 degrees-of-freedom
-        expc2 (- (/ (inc degrees-of-freedom) 2))
-        c2 (Math/pow (inc (/ numeratorc2 denominatorc2)) expc2)]
-    (* c1 c2)))
+(comment(defn t-distribution-probability-density [degrees-of-freedom t]
+   (let [numeratorc1 (gamma-function (/ (inc degrees-of-freedom) 2))
+         sqrt (Math/sqrt (* degrees-of-freedom Math/PI))
+         denominatorc1 (* sqrt (gamma-function (/ degrees-of-freedom 2)))
+         c1 (/ numeratorc1 denominatorc1)
+         numeratorc2 (Math/pow t 2)
+         denominatorc2 degrees-of-freedom
+         expc2 (- (/ (inc degrees-of-freedom) 2))
+         c2 (Math/pow (inc (/ numeratorc2 denominatorc2)) expc2)]
+     (* c1 c2))))
 
-(defn t-distribution-cumulative [dof t-score]
-  (integrate #(t-distribution-probability-density dof %) -7.0 t-score 1000))
+(comment(defn t-distribution-cumulative [dof t-score]
+   (integrate #(t-distribution-probability-density dof %) -7.0 t-score 1000)))
 
 (comment "not 100% sure this is right. pval is correct as far as cdf goes, but don't know why we don't use alpha")
 (defn hypothesis-test-mean-double-tailed [observed-mean hyp-mean std-dev n]
