@@ -34,9 +34,29 @@
    (cljs)
    (target :dir #{"target"})))
 
-(deftask test-and-dev []
+(deftask test-and-watch []
   (comp
    (watch)
    (test-cljs)))
+
+(deftask test-common-and-watch []
+  (comp 
+   (watch)
+   (test-cljs :namespaces [#".\.common.*"])))
+
+(deftask test-distributions-and-watch []
+  (comp
+   (watch)
+   (test-cljs :namespaces [#".\.distributions.*"])))
+
+(deftask test-line-of-best-fit-and-watch []
+  (comp
+   (watch)
+   (test-cljs :namespaces [#".\.line-of-best-fit.*"])))
+
+(deftask test-basics-and-watch []
+  (comp 
+   (watch)
+   (test-cljs :namespaces [#".*\.basics.*"])))
 
 (set-env! :source-paths #(conj % "test/cljs"))
